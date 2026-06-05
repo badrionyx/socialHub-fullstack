@@ -1,4 +1,4 @@
-SocialHub - Full Stack Social Media Platform
+SocialHub - Full Stack Social Media Platform...
 
 Overview: SocialHub is a full-stack social media application developed using Java Spring Boot, React, and MySQL. The platform allows users to register, authenticate securely using JWT, create posts, comment and like.
 
