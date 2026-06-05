@@ -40,7 +40,7 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
-    // One user has many posts
+    // One user has many posts...
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts;
 
