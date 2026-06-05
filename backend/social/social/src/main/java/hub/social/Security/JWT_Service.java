@@ -1,15 +1,18 @@
-package hub.social.Service;
+package hub.social.Security;
 
 import java.util.Date;
 
 import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-public class JWTService {
+@Service
+public class JWT_Service {
 	private static final String SECRET = "SocialHub_SecretKey_24680_stampValue";
 	private static final long EXPIRY = 7 * 24 * 60 * 60 * 1000L;
 

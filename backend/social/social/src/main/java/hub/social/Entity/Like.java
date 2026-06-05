@@ -37,6 +37,6 @@ public class Like {
 
     // Many likes belong to one post
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)       
     private Post post;
 }
