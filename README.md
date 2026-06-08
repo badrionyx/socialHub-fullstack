@@ -24,7 +24,7 @@ User Features
 
 Post Features
 ----------------------------------------
-•	Create Posts
+•	Create Posts for user
 •	View All Posts Feed
 •	View Single Post
 •	View User Posts
