@@ -28,7 +28,7 @@ public class AuthService {
 			throw new RuntimeException("Username already taken");
 		}
 
-=		User user = new User();
+		User user = new User();
 		user.setUsername(request.getUsername());
 		user.setEmail(request.getEmail());
 		// Hash the password — never store plain text!

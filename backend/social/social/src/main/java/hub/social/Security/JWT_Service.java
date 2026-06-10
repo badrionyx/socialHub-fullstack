@@ -41,7 +41,7 @@ public class JWT_Service {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();                    
-        return claims.get("userId", Long.class);
+        return claims.get("user_id", Long.class);
     }
 
 	public boolean isTokenValid(String token) {
