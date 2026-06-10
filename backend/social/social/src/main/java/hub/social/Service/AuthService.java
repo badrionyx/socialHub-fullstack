@@ -20,18 +20,15 @@ public class AuthService {
 	private final JWT_Service jwtService;
 
 	public String register(RegisterRequest request) {
-		// Check if email already used
 		if (userRepository.existsByEmail(request.getEmail())) {
 			throw new RuntimeException("Email already registered");
 		}
 
-		// Check if username already taken
 		if (userRepository.existsByUsername(request.getUsername())) {
 			throw new RuntimeException("Username already taken");
 		}
 
-		// Create new user
-		User user = new User();
+=		User user = new User();
 		user.setUsername(request.getUsername());
 		user.setEmail(request.getEmail());
 		// Hash the password — never store plain text!

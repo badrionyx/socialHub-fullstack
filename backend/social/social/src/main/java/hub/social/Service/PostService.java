@@ -22,13 +22,13 @@ public class PostService {
 	private final UserRepo userRepository;
 	private final LikeRepo likeRepository;
 
-	// ✅ Create a new post
+	
 	public PostResponse createPost(PostRequest request, Long userId) {
 
-		// find who is posting
+	
 		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-		// build the post
+		
 		Post post = new Post();
 		post.setContent(request.getContent());
 		post.setImageUrl(request.getImageUrl());
@@ -58,7 +58,7 @@ public class PostService {
 	public void deletePost(Long postId, Long userId) {
 		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
-		// check if this user owns the post
+		
 		if (!post.getUser().getId().equals(userId)) {
 			throw new RuntimeException("You can only delete your own posts");
 		}
@@ -66,7 +66,7 @@ public class PostService {
 		postRepository.delete(post);
 	}
 
-	// 🔧 Helper — converts Post entity → PostResponse DTO
+	//  Helper — it will converts Post entity → PostResponse DTO
 	private PostResponse mapToResponse(Post post, Long loggedInUserId) {
 		PostResponse response = new PostResponse();
 		response.setId(post.getId());
@@ -76,7 +76,7 @@ public class PostService {
 
 		// author details
 		response.setUserId(post.getUser().getId());
-		response.setUsername(post.getUser().getUsername());
+			response.setUsername(post.getUser().getUsername());
 		response.setProfilePicture(post.getUser().getProfilePicture());
 
 		// like count
@@ -85,7 +85,6 @@ public class PostService {
 		// comment count
 		response.setCommentCount(post.getComments() != null ? post.getComments().size() : 0);
 
-		// did the logged-in user like this post?
 		response.setLikedByMe(likeRepository.findByUserIdAndPostId(loggedInUserId, post.getId()).isPresent());
 
 		return response;
