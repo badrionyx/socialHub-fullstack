@@ -39,6 +39,7 @@ A full-stack social media web application built with Java Spring Boot and React.
 
 SocialHub/
 ├── backend/ # Spring Boot REST API
+
 └── frontend/ # React + Vite app
 
 ---
