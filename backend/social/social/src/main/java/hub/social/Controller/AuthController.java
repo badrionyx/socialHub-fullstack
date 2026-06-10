@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000") // allow React to call this
+@CrossOrigin(origins = "http://localhost:5173") // allow React to call this
 public class AuthController {
 
 	private final AuthService authService;

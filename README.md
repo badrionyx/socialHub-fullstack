@@ -1,51 +1,68 @@
-SocialHub - Full Stack Social Media Platform...
+# SocialHub 🌐
 
-Overview: SocialHub is a full-stack social media application developed using Java Spring Boot, React, and MySQL. The platform allows users to register, authenticate securely using JWT, create posts, comment and like.
+A full-stack social media web application built with Java Spring Boot and React.
 
-Features
-*********
+---
 
-Authentication & Security
-----------------------------------------
-•	User Registration
-•	User Login
-•	JWT Authentication
-•	Password Encryption using BCrypt
-•	Protected API Endpoints
-========================================
+## Tech Stack
 
-User Features
-----------------------------------------
-•	Create Account
-•	View User Profile
-•	Update Profile Information
-•	Upload Profile Picture
-========================================
+**Backend**
 
-Post Features
-----------------------------------------
-•	Create Posts for user
-•	View All Posts Feed
-•	View Single Post
-•	View User Posts
-•	Delete Own Posts
-========================================
+- Java 17
+- Spring Boot 3.2
+- Spring Security + JWT
+- Spring Data JPA
+- MySQL
 
-Social Features
-----------------------------------------
-•	Like Posts
-•	Unlike Posts
-•	Comment on Posts
-•	Follow Users
-•	Unfollow Users
-========================================
+**Frontend**
 
-Feed Features
-----------------------------------------
-•	Latest Posts Feed
-•	Like Count
-•	Comment Count
-•	Post Author Information
-========================================
-•	User Interaction Status
+- React + Vite
+- Axios
+- React Router DOM
+- React Hot Toast
 
+---
+
+## Features
+
+- Register and login with JWT authentication
+- Create, view, and delete posts
+- Like and unlike posts
+- Comment on posts
+- Follow and unfollow users
+- View user profiles
+- Protected routes (login required)
+
+---
+
+## Project Structure
+
+SocialHub/
+├── backend/ # Spring Boot REST API
+└── frontend/ # React + Vite app
+
+---
+
+Run the Spring Boot application:
+
+Backend runs on `http://localhost:8080`
+
+Frontend runs on `http://localhost:5173`
+
+---
+
+## Database
+
+Tables auto-created by Spring JPA on first run:
+
+- `users`
+- `posts`
+- `comments`
+- `likes`
+- `follows`
+
+---
+
+## Author
+
+Built as a fresher full-stack project using Java Spring Boot + React.
