@@ -1,0 +1,163 @@
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.loadingPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+.loadingDot {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Hero card */
+.heroCard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.heroBg {
+  height: 100px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2));
+  position: relative;
+}
+
+.heroContent {
+  padding: 0 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Avatar */
+.avatarWrap {
+  position: relative;
+  margin-top: -48px;
+  margin-bottom: 1rem;
+}
+.avatar {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: 4px solid var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.25rem;
+  font-weight: 700;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px var(--accent), 0 8px 24px rgba(99,102,241,0.3);
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.uploadOverlay {
+  position: absolute;
+  bottom: 2px; right: 2px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 2px solid var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: var(--text2);
+  transition: background 0.2s, color 0.2s;
+}
+.uploadOverlay:hover { background: var(--accent); color: white; }
+
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.displayName {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.4px;
+}
+
+/* Follow button */
+.followBtn {
+  padding: 0.45rem 1.5rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+  border: none;
+  transition: all 0.2s;
+  letter-spacing: 0.2px;
+}
+.followBtn:hover { opacity: 0.85; box-shadow: 0 4px 16px var(--glow); }
+.followBtn.following {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.followBtn.following:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(244,63,94,0.08);
+  box-shadow: none;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.statNum { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+.statLabel { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.statDivider { width: 1px; height: 32px; background: var(--border); }
+
+/* Posts section */
+.postsSection { margin-top: 0.5rem; }
+.postsHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 1rem;
+}
+.postsHeadingDot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text3);
+}
+.emptyIcon { font-size: 2rem; color: var(--accent); margin-bottom: 0.75rem; }

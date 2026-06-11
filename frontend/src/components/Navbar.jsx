@@ -1,66 +1,105 @@
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import api from "../api/axios";
 import toast from "react-hot-toast";
+import s from "./Navbar.module.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef(null);
 
-  const handleLogout = () => {
-    logout();
-    toast.success("Logged out!");
-    navigate("/login");
+  const handleSearch = async (e) => {
+    const v = e.target.value;
+    setQuery(v);
+    if (v.trim().length < 2) {
+      setResults([]);
+      setShowResults(false);
+      return;
+    }
+    try {
+      const res = await api.get(`/api/users/search?q=${v}`);
+      setResults(res.data);
+      setShowResults(true);
+    } catch {}
   };
 
+  const goToProfile = (id) => {
+    setQuery("");
+    setResults([]);
+    setShowResults(false);
+    navigate(`/profile/${id}`);
+  };
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target))
+        setShowResults(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   return (
-    <nav style={styles.nav}>
-      <Link to="/" style={styles.logo}>
-        SocialHub 🌐
+    <nav className={s.nav}>
+      <Link to="/" className={s.logo}>
+        <span className={s.logoIcon}>◈</span>
+        <span>SocialHub</span>
       </Link>
-      {}
 
-      <div style={styles.right}>
-        <Link to={`/profile/${user.userId}`} style={styles.profileLink}>
-          👤 {user.username}
-          {}
+      <div className={s.searchWrap} ref={searchRef}>
+        <span className={s.searchIcon}>⌕</span>
+        <input
+          className={s.searchInput}
+          placeholder="Search people..."
+          value={query}
+          onChange={handleSearch}
+          onFocus={() => results.length > 0 && setShowResults(true)}
+        />
+        {showResults && (
+          <div className={s.dropdown}>
+            {results.length === 0 ?
+              <div className={s.noResult}>No users found</div>
+            : results.map((u) => (
+                <div
+                  key={u.id}
+                  className={s.dropItem}
+                  onClick={() => goToProfile(u.id)}
+                >
+                  <div className={s.dropAvatar}>
+                    {u.username[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <div className={s.dropName}>{u.username}</div>
+                    <div className={s.dropEmail}>{u.email}</div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        )}
+      </div>
+
+      <div className={s.right}>
+        <Link to={`/profile/${user.userId}`} className={s.profileBtn}>
+          <div className={s.navAvatar}>{user.username[0].toUpperCase()}</div>
+          <span className={s.navUsername}>{user.username}</span>
         </Link>
-
-        <button onClick={handleLogout} style={styles.logoutBtn}>
-          Logout
+        <button
+          className={s.logoutBtn}
+          onClick={() => {
+            logout();
+            toast.success("See you soon!");
+            navigate("/login");
+          }}
+        >
+          Sign out
         </button>
       </div>
     </nav>
   );
 }
-
-const styles = {
-  nav: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "1rem 2rem",
-    backgroundColor: "#4f46e5",
-    color: "white",
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-    // sticky : stays at top while scrolling
-  },
-  logo: {
-    color: "white",
-    textDecoration: "none",
-    fontSize: "1.4rem",
-    fontWeight: "bold",
-  },
-  right: { display: "flex", alignItems: "center", gap: "1rem" },
-  profileLink: { color: "white", textDecoration: "none" },
-  logoutBtn: {
-    padding: "0.4rem 1rem",
-    backgroundColor: "white",
-    color: "#4f46e5",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-};
