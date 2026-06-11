@@ -1,147 +1,137 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import api from "../api/axios";
-import toast from "react-hot-toast";
-import { useAuth } from "../context/AuthContext";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api/axios';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
+import s from './PostCard.module.css';
 
 export default function PostCard({ post, onRefresh }) {
   const { user } = useAuth();
-
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
+  const [newComment, setNewComment] = useState('');
   const [loadingComment, setLoadingComment] = useState(false);
 
   const handleLike = async () => {
     try {
-      if (post.likedByMe) {
-        await api.delete(`/api/likes/${post.id}`);
-      } else {
-        await api.post(`/api/likes/${post.id}`);
-      }
+      post.likedByMe
+        ? await api.delete(`/api/likes/${post.id}`)
+        : await api.post(`/api/likes/${post.id}`);
       onRefresh();
-    } catch (error) {
-      toast.error("Could not update like");
-    }
+    } catch { toast.error('Could not update like'); }
   };
 
-  const loadComments = async () => {
-    if (showComments) {
-      setShowComments(false);
-      return;
-    }
-
+  const toggleComments = async () => {
+    if (showComments) { setShowComments(false); return; }
     try {
-      const response = await api.get(`/api/comments/${post.id}`);
-      setComments(response.data);
+      const res = await api.get(`/api/comments/${post.id}`);
+      setComments(res.data);
       setShowComments(true);
-    } catch (error) {
-      toast.error("Could not load comments");
-    }
+    } catch { toast.error('Could not load comments'); }
   };
 
   const handleComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-
     setLoadingComment(true);
     try {
       await api.post(`/api/comments/${post.id}`, { content: newComment });
-      setNewComment("");
-      const response = await api.get(`/api/comments/${post.id}`);
-      setComments(response.data);
+      setNewComment('');
+      const res = await api.get(`/api/comments/${post.id}`);
+      setComments(res.data);
       onRefresh();
-    } catch (error) {
-      toast.error("Could not post comment");
-    } finally {
-      setLoadingComment(false);
-    }
+    } catch { toast.error('Could not post comment'); }
+    finally { setLoadingComment(false); }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Delete this post?")) return;
-
+    if (!window.confirm('Delete this post?')) return;
     try {
       await api.delete(`/api/posts/${post.id}`);
-      toast.success("Post deleted");
+      toast.success('Post deleted');
       onRefresh();
-    } catch (error) {
-      toast.error("Could not delete post");
-    }
+    } catch { toast.error('Could not delete post'); }
+  };
+
+  const timeAgo = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr);
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return 'just now';
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
   };
 
   return (
-    <div style={styles.card}>
-      {}
-      <div style={styles.header}>
-        <Link to={`/profile/${post.userId}`} style={styles.authorLink}>
-          <div style={styles.avatar}>
-            {post.username.charAt(0).toUpperCase()}
-            {}
-            {}
+    <div className={`${s.card} fade-up`}>
+      <div className={s.header}>
+        <Link to={`/profile/${post.userId}`} className={s.author}>
+          <div className={s.avatar}>
+            {post.profilePicture
+              ? <img src={`http://localhost:8080/uploads/${post.profilePicture}`} alt="" />
+              : post.username[0].toUpperCase()
+            }
           </div>
           <div>
-            <div style={styles.username}>{post.username}</div>
-            <div style={styles.time}>
-              {new Date(post.createdAt).toLocaleDateString()}
-              {}
-            </div>
+            <div className={s.username}>{post.username}</div>
+            <div className={s.time}>{timeAgo(post.createdAt)}</div>
           </div>
         </Link>
-
-        {}
         {user.userId === post.userId && (
-          <button onClick={handleDelete} style={styles.deleteBtn}>
-            🗑️
+          <button className={s.deleteBtn} onClick={handleDelete} title="Delete post">
+            ✕
           </button>
         )}
       </div>
 
-      {}
-      <p style={styles.content}>{post.content}</p>
+      <p className={s.content}>{post.content}</p>
 
       {post.imageUrl && (
-        <img src={post.imageUrl} alt="post" style={styles.image} />
+        <img src={post.imageUrl} alt="" className={s.postImage} />
       )}
 
-      {}
-      <div style={styles.actions}>
-        <button onClick={handleLike} style={styles.actionBtn}>
-          {post.likedByMe ? "❤️" : "🤍"} {post.likeCount}
-          {}
+      <div className={s.actions}>
+        <button
+          className={`${s.actionBtn} ${post.likedByMe ? s.liked : ''}`}
+          onClick={handleLike}
+        >
+          <span className={s.actionIcon}>{post.likedByMe ? '♥' : '♡'}</span>
+          <span>{post.likeCount}</span>
         </button>
 
-        <button onClick={loadComments} style={styles.actionBtn}>
-          💬 {post.commentCount}
+        <button
+          className={`${s.actionBtn} ${showComments ? s.active : ''}`}
+          onClick={toggleComments}
+        >
+          <span className={s.actionIcon}>◎</span>
+          <span>{post.commentCount}</span>
         </button>
       </div>
 
-      {}
       {showComments && (
-        <div style={styles.commentsSection}>
-          {}
-          {comments.map((comment) => (
-            <div key={comment.id} style={styles.comment}>
-              {}
-              <strong>{comment.username}: </strong>
-              {comment.content}
-            </div>
-          ))}
-
-          {}
-          <form onSubmit={handleComment} style={styles.commentForm}>
+        <div className={s.commentsSection}>
+          {comments.length === 0
+            ? <p className={s.noComments}>No comments yet. Be first!</p>
+            : comments.map(c => (
+              <div key={c.id} className={s.comment}>
+                <div className={s.commentAvatar}>{c.username[0].toUpperCase()}</div>
+                <div className={s.commentBody}>
+                  <span className={s.commentUser}>{c.username}</span>
+                  <span className={s.commentText}>{c.content}</span>
+                </div>
+              </div>
+            ))
+          }
+          <form onSubmit={handleComment} className={s.commentForm}>
             <input
-              style={styles.commentInput}
+              className={s.commentInput}
               placeholder="Write a comment..."
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={e => setNewComment(e.target.value)}
             />
-            <button
-              type="submit"
-              style={styles.commentBtn}
-              disabled={loadingComment}
-            >
-              Send
+            <button type="submit" className={s.commentSend} disabled={loadingComment}>
+              {loadingComment ? '...' : '↑'}
             </button>
           </form>
         </div>
@@ -149,83 +139,3 @@ export default function PostCard({ post, onRefresh }) {
     </div>
   );
 }
-
-const styles = {
-  card: {
-    backgroundColor: "white",
-    padding: "1.5rem",
-    borderRadius: "12px",
-    marginBottom: "1rem",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "1rem",
-  },
-  authorLink: {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.75rem",
-    textDecoration: "none",
-    color: "inherit",
-  },
-  avatar: {
-    width: "42px",
-    height: "42px",
-    borderRadius: "50%",
-    backgroundColor: "#4f46e5",
-    color: "white",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontWeight: "bold",
-    fontSize: "1.1rem",
-  },
-  username: { fontWeight: "bold", color: "#1a1a2e" },
-  time: { fontSize: "0.8rem", color: "#999" },
-  content: { margin: "0.5rem 0", lineHeight: "1.6", color: "#333" },
-  image: { width: "100%", borderRadius: "8px", marginTop: "0.5rem" },
-  actions: { display: "flex", gap: "1rem", marginTop: "1rem" },
-  actionBtn: {
-    background: "none",
-    border: "1px solid #eee",
-    padding: "0.4rem 1rem",
-    borderRadius: "20px",
-    cursor: "pointer",
-    fontSize: "0.95rem",
-  },
-  deleteBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "1.1rem",
-  },
-  commentsSection: {
-    marginTop: "1rem",
-    paddingTop: "1rem",
-    borderTop: "1px solid #eee",
-  },
-  comment: {
-    padding: "0.5rem 0",
-    borderBottom: "1px solid #f5f5f5",
-    fontSize: "0.9rem",
-  },
-  commentForm: { display: "flex", gap: "0.5rem", marginTop: "0.75rem" },
-  commentInput: {
-    flex: 1,
-    padding: "0.5rem",
-    border: "1px solid #ddd",
-    borderRadius: "6px",
-    fontSize: "0.9rem",
-  },
-  commentBtn: {
-    padding: "0.5rem 1rem",
-    backgroundColor: "#4f46e5",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-};

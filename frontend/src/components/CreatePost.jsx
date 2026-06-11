@@ -1,92 +1,60 @@
-import { useState } from "react";
-import api from "../api/axios";
-import toast from "react-hot-toast";
+import { useState } from 'react';
+import api from '../api/axios';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
+import s from './CreatePost.module.css';
 
 export default function CreatePost({ onPostCreated }) {
-  const [content, setContent] = useState("");
+  const { user } = useAuth();
+  const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!content.trim()) {
-      toast.error("Write something first!");
-      return;
-      // trim() : removes spaces from both ends
-      // '   '.trim() = '' → empty → stop here
-    }
-
+    if (!content.trim()) { toast.error('Write something first!'); return; }
     setLoading(true);
     try {
-      await api.post("/api/posts", { content, imageUrl: null });
-
-      toast.success("Post created!");
-      setContent("");
-
+      await api.post('/api/posts', { content, imageUrl: null });
+      toast.success('Posted!');
+      setContent('');
       onPostCreated();
-    } catch (error) {
-      toast.error("Failed to create post");
-    } finally {
-      setLoading(false);
-    }
+    } catch { toast.error('Could not create post'); }
+    finally { setLoading(false); }
+  };
+
+  const handleKey = (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleSubmit(e);
   };
 
   return (
-    <div style={styles.card}>
-      <form onSubmit={handleSubmit}>
+    <div className={s.card}>
+      <div className={s.top}>
+        <div className={s.avatar}>{user.username[0].toUpperCase()}</div>
         <textarea
-          style={styles.textarea}
+          className={s.textarea}
           placeholder="What's on your mind?"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={e => setContent(e.target.value)}
+          onKeyDown={handleKey}
           rows={3}
           maxLength={500}
         />
-
-        <div style={styles.footer}>
-          <span style={styles.counter}>{content.length}/500</span>
-          {}
-
-          <button style={styles.button} type="submit" disabled={loading}>
-            {loading ? "Posting..." : "Post"}
+      </div>
+      <div className={s.footer}>
+        <span className={s.hint}>Ctrl+Enter to post</span>
+        <div className={s.right}>
+          <span className={`${s.counter} ${content.length > 450 ? s.warn : ''}`}>
+            {content.length}/500
+          </span>
+          <button
+            className={s.postBtn}
+            onClick={handleSubmit}
+            disabled={loading || !content.trim()}
+          >
+            {loading ? 'Posting...' : 'Post'}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  card: {
-    backgroundColor: "white",
-    padding: "1.5rem",
-    borderRadius: "12px",
-    marginBottom: "1rem",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-  },
-  textarea: {
-    width: "100%",
-    border: "1px solid #eee",
-    borderRadius: "8px",
-    padding: "0.75rem",
-    fontSize: "1rem",
-    resize: "none",
-    boxSizing: "border-box",
-    fontFamily: "inherit",
-  },
-  footer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "0.75rem",
-  },
-  counter: { color: "#999", fontSize: "0.85rem" },
-  button: {
-    padding: "0.5rem 1.5rem",
-    backgroundColor: "#4f46e5",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-  },
-};

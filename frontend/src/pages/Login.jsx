@@ -3,110 +3,83 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
+import s from "./Auth.module.css";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const response = await api.post("/api/auth/login", form);
-
-      const { token, username, userId } = response.data;
-
+      const res = await api.post("/api/auth/login", form);
+      const { token, username, userId } = res.data;
       login({ username, userId }, token);
-
       toast.success(`Welcome back, ${username}!`);
       navigate("/");
-    } catch (error) {
-      toast.error(error.response?.data || "Login failed");
+    } catch (err) {
+      toast.error(err.response?.data || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>SocialHub 🌐</h2>
-        <p style={styles.subtitle}>Login to your account</p>
+    <div className={s.page}>
+      <div className={s.glow} />
+      <div className={s.card}>
+        <div className={s.brand}>
+          <span className={s.brandIcon}>◈</span>
+          <span className={s.brandName}>SocialHub</span>
+        </div>
+        <h1 className={s.title}>Welcome back</h1>
+        <p className={s.sub}>Sign in to your account</p>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            style={styles.input}
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-          />
-          <input
-            style={styles.input}
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-          />
-          <button style={styles.button} type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+        <form onSubmit={handleSubmit} className={s.form}>
+          <div className={s.field}>
+            <label className={s.label}>Email</label>
+            <input
+              className={s.input}
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={s.field}>
+            <label className={s.label}>Password</label>
+            <input
+              className={s.input}
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button className={s.btn} type="submit" disabled={loading}>
+            {loading ?
+              <span className={s.spinner} />
+            : "Sign in"}
           </button>
         </form>
 
-        <p style={styles.link}>
-          New here? <Link to="/register">Create account</Link>
+        <p className={s.switch}>
+          Don't have an account?{" "}
+          <Link to="/register" className={s.link}>
+            Create one
+          </Link>
         </p>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    backgroundColor: "#f0f2f5",
-  },
-  card: {
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "12px",
-    width: "100%",
-    maxWidth: "400px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-  },
-  title: { textAlign: "center", color: "#4f46e5", fontSize: "1.8rem" },
-  subtitle: { textAlign: "center", color: "#666", marginBottom: "1.5rem" },
-  input: {
-    width: "100%",
-    padding: "0.75rem",
-    marginBottom: "1rem",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    fontSize: "1rem",
-    boxSizing: "border-box",
-  },
-  button: {
-    width: "100%",
-    padding: "0.75rem",
-    backgroundColor: "#4f46e5",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "1rem",
-    cursor: "pointer",
-  },
-  link: { textAlign: "center", marginTop: "1rem" },
-};
