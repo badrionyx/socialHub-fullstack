@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import s from "./Navbar.module.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { dark, toggle } = useTheme();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -36,12 +38,12 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    const handler = (e) => {
+    const h = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target))
         setShowResults(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
   }, []);
 
   return (
@@ -75,7 +77,7 @@ export default function Navbar() {
                   </div>
                   <div>
                     <div className={s.dropName}>{u.username}</div>
-                    <div className={s.dropEmail}>{u.email}</div>
+                    <div className={s.dropSub}>{u.email}</div>
                   </div>
                 </div>
               ))
@@ -85,10 +87,20 @@ export default function Navbar() {
       </div>
 
       <div className={s.right}>
+        {/* ── Dark / Light toggle ── */}
+        <button
+          className={s.themeToggle}
+          onClick={toggle}
+          title={dark ? "Light mode" : "Dark mode"}
+        >
+          <span className={s.themeIcon}>{dark ? "☀️" : "🌙"}</span>
+        </button>
+
         <Link to={`/profile/${user.userId}`} className={s.profileBtn}>
           <div className={s.navAvatar}>{user.username[0].toUpperCase()}</div>
           <span className={s.navUsername}>{user.username}</span>
         </Link>
+
         <button
           className={s.logoutBtn}
           onClick={() => {

@@ -4,12 +4,12 @@
   gap: 1rem;
   padding: 0 2rem;
   height: 62px;
-  background: rgba(13,13,26,0.85);
-  backdrop-filter: blur(16px);
+  background: var(--bg2);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: var(--shadow);
 }
 
 .logo {
@@ -31,7 +31,7 @@
 .searchWrap {
   position: relative;
   flex: 1;
-  max-width: 320px;
+  max-width: 300px;
 }
 .searchIcon {
   position: absolute;
@@ -51,18 +51,23 @@
   color: var(--text);
   font-size: 0.875rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .searchInput:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--glow);
 }
-.searchInput::placeholder { color: var(--text3); }
+.searchInput::placeholder {
+  color: var(--text3);
+}
 
 .dropdown {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -78,52 +83,112 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.dropItem:hover { background: var(--bg3); }
+.dropItem:hover {
+  background: var(--bg3);
+}
 .dropAvatar {
-  width: 36px; height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
   flex-shrink: 0;
+  color: white;
 }
-.dropName { font-size: 0.875rem; font-weight: 600; color: var(--text); }
-.dropEmail { font-size: 0.75rem; color: var(--text2); }
-.noResult { padding: 1rem; text-align: center; color: var(--text3); font-size: 0.875rem; }
+.dropName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.dropSub {
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+.noResult {
+  padding: 1rem;
+  text-align: center;
+  color: var(--text3);
+  font-size: 0.875rem;
+}
 
 /* Right side */
-.right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
-.profileBtn {
+.right {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.35rem 0.75rem;
+  margin-left: auto;
+}
+
+/* Theme toggle button */
+.themeToggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition:
+    transform 0.3s,
+    background 0.2s;
+}
+.themeToggle:hover {
+  background: var(--bg3);
+  transform: rotate(20deg) scale(1.1);
+}
+.themeIcon {
+  line-height: 1;
+}
+
+/* Profile pill */
+.profileBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 24px;
   background: var(--bg3);
   border: 1px solid var(--border);
   transition: border-color 0.2s;
 }
-.profileBtn:hover { border-color: var(--accent); }
+.profileBtn:hover {
+  border-color: var(--accent);
+}
 .navAvatar {
-  width: 28px; height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: white;
 }
-.navUsername { font-size: 0.875rem; font-weight: 500; color: var(--text); }
+.navUsername {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
 .logoutBtn {
-  padding: 0.4rem 1rem;
+  padding: 0.38rem 0.9rem;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 24px;
   color: var(--text2);
   font-size: 0.8rem;
   font-weight: 500;
-  transition: all 0.2s;
 }
 .logoutBtn:hover {
   border-color: var(--red);
   color: var(--red);
-  background: rgba(244,63,94,0.08);
+  background: rgba(244, 63, 94, 0.06);
 }
