@@ -3,21 +3,21 @@ package hub.social.Controller;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import hub.social.DTO.PostRequest;
 import hub.social.DTO.PostResponse;
 import hub.social.Security.JWT_Service;
 import hub.social.Service.PostService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,14 +34,18 @@ public class PostController {
         String token = authHeader.substring(7); // remove "Bearer "
         return jwtService.extractUserId(token);
     }
-
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> createPost(
-            @Valid @RequestBody PostRequest request,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam("content") String content,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestHeader("Authorization") String authHeader)
+            throws Exception {
 
         Long userId = getUserId(authHeader);
-        return ResponseEntity.ok(postService.createPost(request, userId));
+
+        return ResponseEntity.ok(
+                postService.createPost(content, file, userId)
+        );
     }
 
     @GetMapping

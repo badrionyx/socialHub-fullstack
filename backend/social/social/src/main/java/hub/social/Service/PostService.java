@@ -1,11 +1,15 @@
 package hub.social.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import hub.social.DTO.PostRequest;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 import hub.social.DTO.PostResponse;
 import hub.social.Entity.Post;
 import hub.social.Entity.User;
@@ -18,23 +22,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
 
+	private final Cloudinary cloudinary;
 	private final PostRepo postRepository;
 	private final UserRepo userRepository;
 	private final LikeRepo likeRepository;
 
-	
-	public PostResponse createPost(PostRequest request, Long userId) {
+	public PostResponse createPost(String content, MultipartFile file, Long userId) throws IOException {
 
-	
 		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-		
+		String imageUrl = null;
+
+		if (file != null && !file.isEmpty()) {
+
+			var uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+			imageUrl = uploadResult.get("secure_url").toString();
+		}
+
 		Post post = new Post();
-		post.setContent(request.getContent());
-		post.setImageUrl(request.getImageUrl());
+
+		post.setContent(content);
+		post.setImageUrl(imageUrl);
 		post.setUser(user);
 
-		// save to DB
 		Post saved = postRepository.save(post);
 
 		return mapToResponse(saved, userId);
@@ -58,7 +69,6 @@ public class PostService {
 	public void deletePost(Long postId, Long userId) {
 		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
-		
 		if (!post.getUser().getId().equals(userId)) {
 			throw new RuntimeException("You can only delete your own posts");
 		}
@@ -66,7 +76,7 @@ public class PostService {
 		postRepository.delete(post);
 	}
 
-	//  Helper — it will converts Post entity → PostResponse DTO
+	// Helper — it will converts Post entity → PostResponse DTO
 	private PostResponse mapToResponse(Post post, Long loggedInUserId) {
 		PostResponse response = new PostResponse();
 		response.setId(post.getId());
@@ -76,7 +86,7 @@ public class PostService {
 
 		// author details
 		response.setUserId(post.getUser().getId());
-			response.setUsername(post.getUser().getUsername());
+		response.setUsername(post.getUser().getUsername());
 		response.setProfilePicture(post.getUser().getProfilePicture());
 
 		// like count
