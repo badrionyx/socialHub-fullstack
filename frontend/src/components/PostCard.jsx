@@ -1,33 +1,40 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../api/axios';
-import toast from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
-import s from './PostCard.module.css';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import api from "../api/axios";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
+import s from "./PostCard.module.css";
 
 export default function PostCard({ post, onRefresh }) {
   const { user } = useAuth();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [loadingComment, setLoadingComment] = useState(false);
 
   const handleLike = async () => {
     try {
-      post.likedByMe
-        ? await api.delete(`/api/likes/${post.id}`)
-        : await api.post(`/api/likes/${post.id}`);
+      post.likedByMe ?
+        await api.delete(`/api/likes/${post.id}`)
+      : await api.post(`/api/likes/${post.id}`);
       onRefresh();
-    } catch { toast.error('Could not update like'); }
+    } catch {
+      toast.error("Could not update like");
+    }
   };
 
   const toggleComments = async () => {
-    if (showComments) { setShowComments(false); return; }
+    if (showComments) {
+      setShowComments(false);
+      return;
+    }
     try {
       const res = await api.get(`/api/comments/${post.id}`);
       setComments(res.data);
       setShowComments(true);
-    } catch { toast.error('Could not load comments'); }
+    } catch {
+      toast.error("Could not load comments");
+    }
   };
 
   const handleComment = async (e) => {
@@ -36,27 +43,32 @@ export default function PostCard({ post, onRefresh }) {
     setLoadingComment(true);
     try {
       await api.post(`/api/comments/${post.id}`, { content: newComment });
-      setNewComment('');
+      setNewComment("");
       const res = await api.get(`/api/comments/${post.id}`);
       setComments(res.data);
       onRefresh();
-    } catch { toast.error('Could not post comment'); }
-    finally { setLoadingComment(false); }
+    } catch {
+      toast.error("Could not post comment");
+    } finally {
+      setLoadingComment(false);
+    }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Delete this post?')) return;
+    if (!window.confirm("Delete this post?")) return;
     try {
       await api.delete(`/api/posts/${post.id}`);
-      toast.success('Post deleted');
+      toast.success("Post deleted");
       onRefresh();
-    } catch { toast.error('Could not delete post'); }
+    } catch {
+      toast.error("Could not delete post");
+    }
   };
 
   const timeAgo = (dateStr) => {
     const diff = Date.now() - new Date(dateStr);
     const m = Math.floor(diff / 60000);
-    if (m < 1) return 'just now';
+    if (m < 1) return "just now";
     if (m < 60) return `${m}m ago`;
     const h = Math.floor(m / 60);
     if (h < 24) return `${h}h ago`;
@@ -68,10 +80,9 @@ export default function PostCard({ post, onRefresh }) {
       <div className={s.header}>
         <Link to={`/profile/${post.userId}`} className={s.author}>
           <div className={s.avatar}>
-            {post.profilePicture
-              ? <img src={`http://localhost:8080/uploads/${post.profilePicture}`} alt="" />
-              : post.username[0].toUpperCase()
-            }
+            {post.profilePicture ?
+              <img src={post.profilePicture} alt="" />
+            : post.username[0].toUpperCase()}
           </div>
           <div>
             <div className={s.username}>{post.username}</div>
@@ -79,7 +90,11 @@ export default function PostCard({ post, onRefresh }) {
           </div>
         </Link>
         {user.userId === post.userId && (
-          <button className={s.deleteBtn} onClick={handleDelete} title="Delete post">
+          <button
+            className={s.deleteBtn}
+            onClick={handleDelete}
+            title="Delete post"
+          >
             ✕
           </button>
         )}
@@ -93,15 +108,15 @@ export default function PostCard({ post, onRefresh }) {
 
       <div className={s.actions}>
         <button
-          className={`${s.actionBtn} ${post.likedByMe ? s.liked : ''}`}
+          className={`${s.actionBtn} ${post.likedByMe ? s.liked : ""}`}
           onClick={handleLike}
         >
-          <span className={s.actionIcon}>{post.likedByMe ? '♥' : '♡'}</span>
+          <span className={s.actionIcon}>{post.likedByMe ? "♥" : "♡"}</span>
           <span>{post.likeCount}</span>
         </button>
 
         <button
-          className={`${s.actionBtn} ${showComments ? s.active : ''}`}
+          className={`${s.actionBtn} ${showComments ? s.active : ""}`}
           onClick={toggleComments}
         >
           <span className={s.actionIcon}>◎</span>
@@ -111,11 +126,13 @@ export default function PostCard({ post, onRefresh }) {
 
       {showComments && (
         <div className={s.commentsSection}>
-          {comments.length === 0
-            ? <p className={s.noComments}>No comments yet. Be first!</p>
-            : comments.map(c => (
+          {comments.length === 0 ?
+            <p className={s.noComments}>No comments yet. Be first!</p>
+          : comments.map((c) => (
               <div key={c.id} className={s.comment}>
-                <div className={s.commentAvatar}>{c.username[0].toUpperCase()}</div>
+                <div className={s.commentAvatar}>
+                  {c.username[0].toUpperCase()}
+                </div>
                 <div className={s.commentBody}>
                   <span className={s.commentUser}>{c.username}</span>
                   <span className={s.commentText}>{c.content}</span>
@@ -128,10 +145,14 @@ export default function PostCard({ post, onRefresh }) {
               className={s.commentInput}
               placeholder="Write a comment..."
               value={newComment}
-              onChange={e => setNewComment(e.target.value)}
+              onChange={(e) => setNewComment(e.target.value)}
             />
-            <button type="submit" className={s.commentSend} disabled={loadingComment}>
-              {loadingComment ? '...' : '↑'}
+            <button
+              type="submit"
+              className={s.commentSend}
+              disabled={loadingComment}
+            >
+              {loadingComment ? "..." : "↑"}
             </button>
           </form>
         </div>
