@@ -1,6 +1,6 @@
 package hub.social.DTO;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ public class PostResponse {
 	private Long id;
 	private String content;
 	private String imageUrl;
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 
 	// author info
 	private Long userId;
