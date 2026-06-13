@@ -6,11 +6,11 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.0.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>hub</groupId>
 	<artifactId>social</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>
 	<url/>
@@ -44,7 +44,7 @@
 		</dependency>
 		
 		<dependency>
-    <groupId>io.jsonwebtoken</groupId>
+   	 <groupId>io.jsonwebtoken</groupId>
     <artifactId>jjwt-api</artifactId>
     <version>0.12.5</version>
 </dependency>
@@ -54,6 +54,12 @@
     <artifactId>jjwt-impl</artifactId>
     <version>0.12.5</version>
     <scope>runtime</scope>
+</dependency>
+
+<dependency>
+    <groupId>com.cloudinary</groupId>
+    <artifactId>cloudinary-http44</artifactId>
+    <version>1.39.0</version>
 </dependency>
 
 <dependency>

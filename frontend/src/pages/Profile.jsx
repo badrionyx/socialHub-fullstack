@@ -97,9 +97,7 @@ export default function Profile() {
   const displayName = profileData?.username || `User ${userId}`;
   const profilePic = profileData?.profilePicture;
   const initial = displayName[0]?.toUpperCase();
-  const picUrl =
-    profilePic ? `http://localhost:8080/uploads/${profilePic}` : null;
-
+  const picUrl = profilePic || null;
   if (loading)
     return (
       <div className={s.loadingPage}>
