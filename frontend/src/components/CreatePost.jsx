@@ -1,29 +1,46 @@
-import { useState } from 'react';
-import api from '../api/axios';
-import toast from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
-import s from './CreatePost.module.css';
+import { useState } from "react";
+import api from "../api/axios";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
+import s from "./CreatePost.module.css";
 
 export default function CreatePost({ onPostCreated }) {
+  const [image, setImage] = useState(null);
   const { user } = useAuth();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!content.trim()) { toast.error('Write something first!'); return; }
+    if (!content.trim()) {
+      toast.error("Write something first!");
+      return;
+    }
     setLoading(true);
     try {
-      await api.post('/api/posts', { content, imageUrl: null });
-      toast.success('Posted!');
-      setContent('');
+      const formData = new FormData();
+
+      formData.append("content", content);
+
+      if (image) {
+        formData.append("file", image);
+      }
+
+      await api.post("/api/posts", formData);
+
+      toast.success("Posted!");
+      setContent("");
+      setImage(null);
       onPostCreated();
-    } catch { toast.error('Could not create post'); }
-    finally { setLoading(false); }
+    } catch {
+      toast.error("Could not create post");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKey = (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleSubmit(e);
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleSubmit(e);
   };
 
   return (
@@ -34,7 +51,7 @@ export default function CreatePost({ onPostCreated }) {
           className={s.textarea}
           placeholder="What's on your mind?"
           value={content}
-          onChange={e => setContent(e.target.value)}
+          onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKey}
           rows={3}
           maxLength={500}
@@ -43,15 +60,22 @@ export default function CreatePost({ onPostCreated }) {
       <div className={s.footer}>
         <span className={s.hint}>Ctrl+Enter to post</span>
         <div className={s.right}>
-          <span className={`${s.counter} ${content.length > 450 ? s.warn : ''}`}>
+          <span
+            className={`${s.counter} ${content.length > 450 ? s.warn : ""}`}
+          >
             {content.length}/500
           </span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
           <button
             className={s.postBtn}
             onClick={handleSubmit}
             disabled={loading || !content.trim()}
           >
-            {loading ? 'Posting...' : 'Post'}
+            {loading ? "Posting..." : "Post"}
           </button>
         </div>
       </div>
