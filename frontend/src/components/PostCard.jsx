@@ -5,23 +5,36 @@ import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import s from "./PostCard.module.css";
 
-// ROBUST AVATAR COMPONENT
-const UserAvatar = ({ src, username, className }) => {
-  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(username || "User")}&background=6366f1&color=fff`;
+// FIXED: Hard-coded size constraints to prevent exploding on mobile
+const UserAvatar = ({ src, username, className, size = 42 }) => {
+  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(username || "U")}&background=6366f1&color=fff`;
+
   return (
     <div
       className={className}
       style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        minWidth: `${size}px`,
+        maxWidth: `${size}px`,
+        borderRadius: "50%",
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        background: "var(--bg3)",
+        flexShrink: 0,
       }}
     >
       <img
         src={src || fallback}
         alt={username || "Avatar"}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+        }}
         onError={(e) => {
           if (e.target.src !== fallback) {
             e.target.src = fallback;
@@ -114,6 +127,7 @@ export default function PostCard({ post = {}, onRefresh }) {
             src={post.profilePicture}
             username={post.username}
             className={s.avatar}
+            size={42}
           />
           <div>
             <div className={s.username}>{post.username || "Anonymous"}</div>
@@ -177,6 +191,7 @@ export default function PostCard({ post = {}, onRefresh }) {
                   src={c.profilePicture}
                   username={c.username}
                   className={s.commentAvatar}
+                  size={28}
                 />
                 <div className={s.commentBody}>
                   <span className={s.commentUser}>{c.username}</span>
