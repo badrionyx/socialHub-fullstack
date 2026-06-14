@@ -5,18 +5,19 @@ import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import s from "./PostCard.module.css";
 
-// FIXED: Hard-coded size constraints to prevent exploding on mobile
-const UserAvatar = ({ src, username, className, size = 42 }) => {
+// DOUBLE-CONSTRAINT AVATAR: Prevents exploding images
+const UserAvatar = ({ src, username, size = 42 }) => {
   const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(username || "U")}&background=6366f1&color=fff`;
 
   return (
     <div
-      className={className}
       style={{
         width: `${size}px`,
         height: `${size}px`,
         minWidth: `${size}px`,
         maxWidth: `${size}px`,
+        minHeight: `${size}px`,
+        maxHeight: `${size}px`,
         borderRadius: "50%",
         overflow: "hidden",
         display: "flex",
@@ -24,11 +25,12 @@ const UserAvatar = ({ src, username, className, size = 42 }) => {
         justifyContent: "center",
         background: "var(--bg3)",
         flexShrink: 0,
+        border: "1px solid var(--border)",
       }}
     >
       <img
         src={src || fallback}
-        alt={username || "Avatar"}
+        alt=""
         style={{
           width: "100%",
           height: "100%",
@@ -126,7 +128,6 @@ export default function PostCard({ post = {}, onRefresh }) {
           <UserAvatar
             src={post.profilePicture}
             username={post.username}
-            className={s.avatar}
             size={42}
           />
           <div>
@@ -190,7 +191,6 @@ export default function PostCard({ post = {}, onRefresh }) {
                 <UserAvatar
                   src={c.profilePicture}
                   username={c.username}
-                  className={s.commentAvatar}
                   size={28}
                 />
                 <div className={s.commentBody}>

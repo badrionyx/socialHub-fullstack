@@ -99,6 +99,12 @@
   font-size: 0.85rem;
   flex-shrink: 0;
   color: white;
+  overflow: hidden;
+}
+.dropAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .dropName {
   font-size: 0.875rem;
@@ -205,51 +211,43 @@
   height: 17px;
 }
 
-/* STACKED MOBILE NAVBAR */
+/* MOBILE: Keep single-row, just make search compact */
 @media (max-width: 768px) {
   .nav {
-    flex-wrap: wrap;
-    padding: 0.5rem 0.75rem;
-    height: auto;
+    padding: 0 0.75rem;
+    height: 56px;
     gap: 0.5rem;
   }
 
-  /* Top row: Logo + Right buttons */
   .logo {
-    order: 1;
     gap: 0.3rem;
   }
+
   .logo span:last-child {
-    display: block !important;
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
+
   .logoIcon {
     font-size: 1.1rem;
   }
 
-  .right {
-    order: 2;
-    gap: 0.4rem;
-  }
-
-  /* Bottom row: Full-width search */
+  /* Compact search on mobile */
   .searchWrap {
-    order: 3;
-    width: 100%;
-    max-width: 100%;
-    margin-top: 0.5rem;
+    max-width: 120px;
+    flex: 0 1 auto;
   }
 
   .searchInput {
-    font-size: 16px; /* Prevent iOS zoom */
-    padding: 0.5rem 1rem 0.5rem 2.2rem;
-    height: 40px;
+    font-size: 14px;
+    padding: 0.35rem 0.5rem 0.35rem 1.6rem;
+    height: 32px;
+    border-radius: 10px;
   }
 
   .searchIcon {
-    width: 16px;
-    height: 16px;
-    left: 12px;
+    width: 12px;
+    height: 12px;
+    left: 8px;
   }
 
   .navUsername {
@@ -257,7 +255,9 @@
   }
 
   .profileBtn {
-    padding: 0.2rem 0.4rem;
+    padding: 0.2rem;
+    background: transparent;
+    border: none;
   }
 
   .themeToggle,
@@ -270,45 +270,12 @@
 
 @media (max-width: 480px) {
   .logo span:last-child {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
-  .searchInput {
-    font-size: 16px;
-    padding: 0.45rem 0.8rem 0.45rem 2rem;
+  .searchWrap {
+    max-width: 100px;
   }
-}
-
-.searchToggle {
-  display: none;
-}
-
-.searchClose {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--text3);
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-.searchClose:hover {
-  background: var(--bg3);
-  color: var(--text);
-}
-.searchClose svg {
-  width: 16px;
-  height: 16px;
-}
-
-.hideOnSearch {
-  display: none;
 }
 
 .navAvatar img {
@@ -316,4 +283,8 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.searchToggle {
+  display: none;
 }
