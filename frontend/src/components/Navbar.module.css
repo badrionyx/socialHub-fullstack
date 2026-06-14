@@ -192,3 +192,46 @@
   color: var(--red);
   background: rgba(244, 63, 94, 0.06);
 }
+@media (max-width: 768px) {
+  .nav {
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .searchWrap {
+    display: none;
+  }
+
+  .navUsername {
+    display: none;
+  }
+
+  .profileBtn {
+    padding: 0.3rem;
+  }
+
+  .logoutBtn {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .logo span:last-child {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  .logoutBtn {
+    display: none;
+  }
+
+  .nav {
+    justify-content: space-between;
+  }
+}
+
+.navAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}

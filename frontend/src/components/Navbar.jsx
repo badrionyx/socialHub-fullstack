@@ -97,7 +97,11 @@ export default function Navbar() {
         </button>
 
         <Link to={`/profile/${user.userId}`} className={s.profileBtn}>
-          <div className={s.navAvatar}>{user.username[0].toUpperCase()}</div>
+          <div className={s.navAvatar}>
+            {user.profilePicture ?
+              <img src={user.profilePicture} alt={user.username} />
+            : user.username[0].toUpperCase()}
+          </div>{" "}
           <span className={s.navUsername}>{user.username}</span>
         </Link>
 
