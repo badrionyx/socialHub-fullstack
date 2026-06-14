@@ -5,9 +5,22 @@ import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import s from "./PostCard.module.css";
 
-// DOUBLE-CONSTRAINT AVATAR: Prevents exploding images
+// COMPLETE AVATAR COMPONENT: Checks all possible data sources
 const UserAvatar = ({ src, username, size = 42 }) => {
-  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(username || "U")}&background=6366f1&color=fff`;
+  // Try multiple sources for the image URL
+  const imageUrl = src || username;
+
+  // Fallback: Generate avatar with initials
+  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(username || "U")}&background=6366f1&color=fff&bold=true`;
+
+  const [imageSrc, setImageSrc] = useState(imageUrl);
+
+  const handleImageError = () => {
+    // If the image fails to load, use the fallback
+    if (imageSrc !== fallback) {
+      setImageSrc(fallback);
+    }
+  };
 
   return (
     <div
@@ -29,19 +42,16 @@ const UserAvatar = ({ src, username, size = 42 }) => {
       }}
     >
       <img
-        src={src || fallback}
-        alt=""
+        key={imageSrc}
+        src={imageSrc}
+        alt={username || "Avatar"}
         style={{
           width: "100%",
           height: "100%",
           objectFit: "cover",
           display: "block",
         }}
-        onError={(e) => {
-          if (e.target.src !== fallback) {
-            e.target.src = fallback;
-          }
-        }}
+        onError={handleImageError}
       />
     </div>
   );
@@ -121,48 +131,50 @@ export default function PostCard({ post = {}, onRefresh }) {
     return `${Math.floor(h / 24)}d ago`;
   };
 
+  // Ensure all post data is available
+  const postData = post || {};
+  const postUsername = postData.username || "User";
+  const postProfilePic = postData.profilePicture || null;
+  const postUserId = postData.userId || null;
+
   return (
     <div className={`${s.card} fade-up`}>
       <div className={s.header}>
-        <Link to={`/profile/${post.userId}`} className={s.author}>
-          <UserAvatar
-            src={post.profilePicture}
-            username={post.username}
-            size={42}
-          />
+        <Link to={`/profile/${postUserId}`} className={s.author}>
+          <UserAvatar src={postProfilePic} username={postUsername} size={42} />
           <div>
-            <div className={s.username}>{post.username || "Anonymous"}</div>
-            <div className={s.time}>{timeAgo(post.createdAt)}</div>
+            <div className={s.username}>{postUsername}</div>
+            <div className={s.time}>{timeAgo(postData.createdAt)}</div>
           </div>
         </Link>
-        {user && user.userId === post.userId && (
+        {user && user.userId === postUserId && (
           <button className={s.deleteBtn} onClick={handleDelete}>
             ✕
           </button>
         )}
       </div>
 
-      <p className={s.content}>{post.content}</p>
+      <p className={s.content}>{postData.content || ""}</p>
 
-      {post.imageUrl && (
-        <img src={post.imageUrl} alt="" className={s.postImage} />
+      {postData.imageUrl && (
+        <img src={postData.imageUrl} alt="" className={s.postImage} />
       )}
 
       <div className={s.actions}>
         <button
-          className={`${s.actionBtn} ${post.likedByMe ? s.liked : ""}`}
+          className={`${s.actionBtn} ${postData.likedByMe ? s.liked : ""}`}
           onClick={handleLike}
         >
           <svg
             className={s.actionIcon}
             viewBox="0 0 24 24"
-            fill={post.likedByMe ? "currentColor" : "none"}
+            fill={postData.likedByMe ? "currentColor" : "none"}
             stroke="currentColor"
             strokeWidth="2"
           >
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          <span>{post.likeCount || 0}</span>
+          <span>{postData.likeCount || 0}</span>
         </button>
 
         <button
@@ -178,7 +190,7 @@ export default function PostCard({ post = {}, onRefresh }) {
           >
             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
           </svg>
-          <span>{post.commentCount || 0}</span>
+          <span>{postData.commentCount || 0}</span>
         </button>
       </div>
 
@@ -189,8 +201,8 @@ export default function PostCard({ post = {}, onRefresh }) {
           : comments.map((c) => (
               <div key={c.id} className={s.comment}>
                 <UserAvatar
-                  src={c.profilePicture}
-                  username={c.username}
+                  src={c.profilePicture || null}
+                  username={c.username || "User"}
                   size={28}
                 />
                 <div className={s.commentBody}>
