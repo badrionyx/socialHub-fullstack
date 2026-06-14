@@ -8,7 +8,8 @@ import s from "./Profile.module.css";
 
 export default function Profile() {
   const { userId } = useParams();
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
+
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);

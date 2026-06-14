@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import api from '../api/axios';
-import PostCard from '../components/PostCard';
-import CreatePost from '../components/CreatePost';
-import toast from 'react-hot-toast';
-import s from './Feed.module.css';
+import { useState, useEffect } from "react";
+import api from "../api/axios";
+import PostCard from "../components/PostCard";
+import CreatePost from "../components/CreatePost";
+import toast from "react-hot-toast";
+import s from "./Feed.module.css";
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -11,13 +11,18 @@ export default function Feed() {
 
   const loadPosts = async () => {
     try {
-      const res = await api.get('/api/posts');
+      const res = await api.get("/api/posts");
       setPosts(res.data);
-    } catch { toast.error('Could not load posts'); }
-    finally { setLoading(false); }
+    } catch {
+      toast.error("Could not load posts");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { loadPosts(); }, []);
+  useEffect(() => {
+    loadPosts();
+  }, []);
 
   return (
     <div className={s.layout}>
@@ -28,23 +33,24 @@ export default function Feed() {
       <main className={s.feed}>
         <CreatePost onPostCreated={loadPosts} />
 
-        {loading ? (
+        {loading ?
           <div className={s.loading}>
-            {[1,2,3].map(i => <div key={i} className={s.skeleton} />)}
+            {[1, 2, 3].map((i) => (
+              <div key={i} className={s.skeleton} />
+            ))}
           </div>
-        ) : posts.length === 0 ? (
+        : posts.length === 0 ?
           <div className={s.empty}>
             <div className={s.emptyIcon}>✦</div>
             <h3>Nothing here yet</h3>
             <p>Be the first to post something!</p>
           </div>
-        ) : (
-          posts.map((post, i) => (
+        : posts.map((post, i) => (
             <div key={post.id} style={{ animationDelay: `${i * 0.04}s` }}>
               <PostCard post={post} onRefresh={loadPosts} />
             </div>
           ))
-        )}
+        }
       </main>
 
       {/* Right sidebar spacer */}

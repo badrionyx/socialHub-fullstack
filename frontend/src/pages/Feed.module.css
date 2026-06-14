@@ -19,11 +19,23 @@
 }
 
 @media (max-width: 768px) {
-  .sidebar { display: none; }
+  .sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout {
+    padding: 1rem 0.75rem;
+  }
 }
 
 /* Loading skeletons */
-.loading { display: flex; flex-direction: column; gap: 0.875rem; }
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
 .skeleton {
   height: 140px;
   background: var(--bg2);
@@ -32,8 +44,12 @@
   animation: shimmer 1.4s ease infinite alternate;
 }
 @keyframes shimmer {
-  from { opacity: 0.5; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Empty state */
@@ -57,4 +73,7 @@
   color: var(--text);
   margin-bottom: 0.35rem;
 }
-.empty p { font-size: 0.875rem; color: var(--text3); }
+.empty p {
+  font-size: 0.875rem;
+  color: var(--text3);
+}

@@ -191,7 +191,7 @@
   border: 1px solid var(--border);
   border-radius: 20px;
   color: var(--text);
-  font-size: 0.85rem;
+  font-size: 1rem;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -219,4 +219,29 @@
 .commentSend:hover {
   opacity: 0.85;
   transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    font-size: 0.9rem;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+
+  .actionBtn {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
 }

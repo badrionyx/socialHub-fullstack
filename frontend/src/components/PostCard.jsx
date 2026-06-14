@@ -103,12 +103,7 @@ export default function PostCard({ post, onRefresh }) {
       <p className={s.content}>{post.content}</p>
 
       {post.imageUrl && (
-        <img
-          src={post.imageUrl}
-          alt="Post"
-          loading="lazy"
-          className={s.postImage}
-        />
+        <img src={post.imageUrl} alt="" className={s.postImage} />
       )}
 
       <div className={s.actions}>

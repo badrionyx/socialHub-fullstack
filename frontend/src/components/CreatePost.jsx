@@ -12,11 +12,6 @@ export default function CreatePost({ onPostCreated }) {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const displayName =
-    image?.name?.length > 20 ?
-      image.name.substring(0, 20) + "..."
-    : image?.name;
-
   useEffect(() => {
     if (!image) {
       setPreviewUrl(null);
@@ -30,7 +25,6 @@ export default function CreatePost({ onPostCreated }) {
   }, [image]);
 
   const handleSubmit = async (e) => {
-    if (loading) return;
     e.preventDefault();
     if (!content.trim() && !image) {
       toast.error("Add text or an image");
@@ -49,7 +43,6 @@ export default function CreatePost({ onPostCreated }) {
       await api.post("/api/posts", formData);
 
       toast.success("Posted!");
-
       setContent("");
       setImage(null);
       if (fileRef.current) {
@@ -119,7 +112,12 @@ export default function CreatePost({ onPostCreated }) {
             className={s.imageBtn}
             style={{ pointerEvents: loading ? "none" : "auto" }}
           >
-            📷 {displayName || "Add Photo"}
+            📷{" "}
+            {image ?
+              image.name.length > 15 ?
+                image.name.slice(0, 15) + "..."
+              : image.name
+            : "Add Photo"}
             <input
               ref={fileRef}
               type="file"
@@ -144,6 +142,7 @@ export default function CreatePost({ onPostCreated }) {
               }}
             />
           </label>
+
           <button
             className={s.postBtn}
             onClick={handleSubmit}
