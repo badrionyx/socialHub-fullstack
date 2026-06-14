@@ -75,21 +75,25 @@ export default function PostCard({ post, onRefresh }) {
     return `${Math.floor(h / 24)}d ago`;
   };
 
+  // FIX: Ensure profile picture URL is handled correctly even when logged out
+  const profilePic = post.profilePicture || post.user?.profilePicture;
+
   return (
     <div className={`${s.card} fade-up`}>
       <div className={s.header}>
         <Link to={`/profile/${post.userId}`} className={s.author}>
           <div className={s.avatar}>
-            {post.profilePicture ?
-              <img src={post.profilePicture} alt="" />
-            : post.username[0].toUpperCase()}
+            {profilePic ?
+              <img src={profilePic} alt={post.username} />
+            : (post.username ? post.username[0].toUpperCase() : '?')}
           </div>
           <div>
             <div className={s.username}>{post.username}</div>
             <div className={s.time}>{timeAgo(post.createdAt)}</div>
           </div>
         </Link>
-        {user.userId === post.userId && (
+        {/* FIX: Add safety check for user object when logged out */}
+        {user && user.userId === post.userId && (
           <button
             className={s.deleteBtn}
             onClick={handleDelete}
@@ -153,30 +157,34 @@ export default function PostCard({ post, onRefresh }) {
           : comments.map((c) => (
               <div key={c.id} className={s.comment}>
                 <div className={s.commentAvatar}>
-                  {c.username[0].toUpperCase()}
+                  {c.profilePicture ? 
+                    <img src={c.profilePicture} alt={c.username} /> 
+                    : (c.username ? c.username[0].toUpperCase() : '?')}
                 </div>
                 <div className={s.commentBody}>
                   <span className={s.commentUser}>{c.username}</span>
-                  <span className={s.commentText}>{c.content}</span>
+                  <p className={s.commentText}>{c.content}</p>
+                  <span className={s.commentTime}>{timeAgo(c.createdAt)}</span>
                 </div>
               </div>
             ))
           }
-          <form onSubmit={handleComment} className={s.commentForm}>
-            <input
-              className={s.commentInput}
-              placeholder="Write a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <button
-              type="submit"
-              className={s.commentSend}
-              disabled={loadingComment}
-            >
-              {loadingComment ? "..." : "↑"}
-            </button>
-          </form>
+          {/* FIX: Hide comment input when logged out */}
+          {user ? (
+            <form className={s.commentForm} onSubmit={handleComment}>
+              <input
+                placeholder="Write a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                disabled={loadingComment}
+              />
+              <button disabled={loadingComment || !newComment.trim()}>
+                {loadingComment ? "..." : "Post"}
+              </button>
+            </form>
+          ) : (
+            <p className={s.loginPrompt}>Please <Link to="/login">login</Link> to comment.</p>
+          )}
         </div>
       )}
     </div>
