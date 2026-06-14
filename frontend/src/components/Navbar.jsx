@@ -152,8 +152,7 @@ export default function Navbar() {
           aria-label="Sign out"
           title="Sign out"
         >
-          <span className={s.logoutText}>Sign out</span>
-          <span className={s.logoutIcon}>⏻</span>
+          ⏻
         </button>
       </div>
     </nav>

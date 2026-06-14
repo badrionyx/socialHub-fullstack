@@ -8,7 +8,7 @@ import s from "./Profile.module.css";
 
 export default function Profile() {
   const { userId } = useParams();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState([]);
@@ -81,6 +81,9 @@ export default function Profile() {
       const res = await api.post("/api/users/upload-picture", formData);
 
       setProfileData(res.data);
+      if (isOwn) {
+        updateUser({ profilePicture: res.data?.profilePicture });
+      }
       toast.success("Profile picture updated!");
     } catch (err) {
       console.error(err);

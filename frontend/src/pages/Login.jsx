@@ -19,8 +19,8 @@ export default function Login() {
     setLoading(true);
     try {
       const res = await api.post("/api/auth/login", form);
-      const { token, username, userId } = res.data;
-      login({ username, userId }, token);
+      const { token, username, userId, profilePicture } = res.data;
+      login({ username, userId, profilePicture }, token);
       toast.success(`Welcome back, ${username}!`);
       navigate("/");
     } catch (err) {

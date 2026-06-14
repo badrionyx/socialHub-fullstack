@@ -179,13 +179,18 @@
 }
 
 .logoutBtn {
-  padding: 0.38rem 0.9rem;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   background: transparent;
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-radius: 50%;
   color: var(--text2);
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 .logoutBtn:hover {
   border-color: var(--red);
@@ -208,26 +213,6 @@
 
   .profileBtn {
     padding: 0.3rem;
-  }
-
-  .logoutBtn {
-    padding: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .logoutText {
-    display: none;
-  }
-
-  .logoutIcon {
-    display: inline-flex;
-    font-size: 1.05rem;
   }
 
   .logo span:last-child {
@@ -300,13 +285,6 @@
 .searchClose:hover {
   background: var(--bg3);
   color: var(--text);
-}
-
-.logoutText {
-  display: inline;
-}
-.logoutIcon {
-  display: none;
 }
 
 .hideOnSearch {
