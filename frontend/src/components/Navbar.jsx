@@ -67,7 +67,19 @@ export default function Navbar() {
         className={`${s.searchWrap} ${mobileSearchOpen ? s.searchActive : ""}`}
         ref={searchRef}
       >
-        <span className={s.searchIcon}>⌕</span>
+        <svg
+          className={s.searchIcon}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
         <input
           ref={mobileInputRef}
           className={s.searchInput}
@@ -87,7 +99,18 @@ export default function Navbar() {
             }}
             aria-label="Close search"
           >
-            ✕
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         )}
         {showResults && (
@@ -121,7 +144,18 @@ export default function Navbar() {
           onClick={() => setMobileSearchOpen(true)}
           aria-label="Search"
         >
-          ⌕
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
         </button>
 
         {/* ── Dark / Light toggle ── */}
@@ -152,7 +186,18 @@ export default function Navbar() {
           aria-label="Sign out"
           title="Sign out"
         >
-          ⏻
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+            <line x1="12" y1="2" x2="12" y2="12" />
+          </svg>
         </button>
       </div>
     </nav>
