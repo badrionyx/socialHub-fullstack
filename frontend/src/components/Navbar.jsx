@@ -73,7 +73,9 @@ export default function Navbar() {
                   onClick={() => goToProfile(u.id)}
                 >
                   <div className={s.dropAvatar}>
-                    {u.username[0].toUpperCase()}
+                    {u.profilePicture ?
+                      <img src={u.profilePicture} alt={u.username} />
+                    : u.username[0].toUpperCase()}
                   </div>
                   <div>
                     <div className={s.dropName}>{u.username}</div>
