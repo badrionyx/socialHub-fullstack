@@ -49,7 +49,7 @@
   border: 1px solid var(--border);
   border-radius: 24px;
   color: var(--text);
-  font-size: 0.875rem;
+  font-size: 1rem;
   outline: none;
   transition:
     border-color 0.2s,
@@ -211,22 +211,106 @@
   }
 
   .logoutBtn {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logoutText {
+    display: none;
+  }
+
+  .logoutIcon {
+    display: inline-flex;
+    font-size: 1.05rem;
   }
 
   .logo span:last-child {
     font-size: 1rem;
   }
-}
-@media (max-width: 480px) {
-  .logoutBtn {
-    display: none;
+
+  .searchToggle {
+    display: flex;
   }
 
+  /* Mobile search overlay */
+  .searchActive {
+    display: flex !important;
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    background: var(--bg2);
+    padding: 0 0.75rem;
+    align-items: center;
+    z-index: 150;
+  }
+  .searchActive .searchInput {
+    border-radius: var(--radius-sm);
+    padding-right: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
   .nav {
     justify-content: space-between;
   }
+}
+
+.searchToggle {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  flex-shrink: 0;
+}
+.searchToggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.searchClose {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 1rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.searchClose:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.logoutText {
+  display: inline;
+}
+.logoutIcon {
+  display: none;
+}
+
+.hideOnSearch {
+  display: none;
 }
 
 .navAvatar img {

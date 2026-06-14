@@ -13,7 +13,9 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const searchRef = useRef(null);
+  const mobileInputRef = useRef(null);
 
   const handleSearch = async (e) => {
     const v = e.target.value;
@@ -39,12 +41,20 @@ export default function Navbar() {
 
   useEffect(() => {
     const h = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target))
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
         setShowResults(false);
+        setMobileSearchOpen(false);
+      }
     };
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
+  useEffect(() => {
+    if (mobileSearchOpen && mobileInputRef.current) {
+      mobileInputRef.current.focus();
+    }
+  }, [mobileSearchOpen]);
 
   return (
     <nav className={s.nav}>
@@ -53,15 +63,33 @@ export default function Navbar() {
         <span>SocialHub</span>
       </Link>
 
-      <div className={s.searchWrap} ref={searchRef}>
+      <div
+        className={`${s.searchWrap} ${mobileSearchOpen ? s.searchActive : ""}`}
+        ref={searchRef}
+      >
         <span className={s.searchIcon}>⌕</span>
         <input
+          ref={mobileInputRef}
           className={s.searchInput}
           placeholder="Search people..."
           value={query}
           onChange={handleSearch}
           onFocus={() => results.length > 0 && setShowResults(true)}
         />
+        {mobileSearchOpen && (
+          <button
+            className={s.searchClose}
+            onClick={() => {
+              setMobileSearchOpen(false);
+              setQuery("");
+              setResults([]);
+              setShowResults(false);
+            }}
+            aria-label="Close search"
+          >
+            ✕
+          </button>
+        )}
         {showResults && (
           <div className={s.dropdown}>
             {results.length === 0 ?
@@ -86,7 +114,16 @@ export default function Navbar() {
         )}
       </div>
 
-      <div className={s.right}>
+      <div className={`${s.right} ${mobileSearchOpen ? s.hideOnSearch : ""}`}>
+        {/* ── Mobile search toggle ── */}
+        <button
+          className={s.searchToggle}
+          onClick={() => setMobileSearchOpen(true)}
+          aria-label="Search"
+        >
+          ⌕
+        </button>
+
         {/* ── Dark / Light toggle ── */}
         <button
           className={s.themeToggle}
@@ -112,8 +149,11 @@ export default function Navbar() {
             toast.success("See you soon!");
             navigate("/login");
           }}
+          aria-label="Sign out"
+          title="Sign out"
         >
-          Sign out
+          <span className={s.logoutText}>Sign out</span>
+          <span className={s.logoutIcon}>⏻</span>
         </button>
       </div>
     </nav>
