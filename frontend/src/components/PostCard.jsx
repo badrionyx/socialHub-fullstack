@@ -75,24 +75,32 @@ export default function PostCard({ post, onRefresh }) {
     return `${Math.floor(h / 24)}d ago`;
   };
 
-  // FIX: Ensure profile picture URL is handled correctly even when logged out
+  // ROBUST FIX: Ensure profile picture URL is handled correctly and has a reliable fallback
   const profilePic = post.profilePicture || post.user?.profilePicture;
+
+  // Use a stable UI avatar service as a fallback if the real image is hidden on logout
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(post.username || "U")}&background=random&color=fff&size=128`;
 
   return (
     <div className={`${s.card} fade-up`}>
       <div className={s.header}>
         <Link to={`/profile/${post.userId}`} className={s.author}>
           <div className={s.avatar}>
-            {profilePic ?
-              <img src={profilePic} alt={post.username} />
-            : (post.username ? post.username[0].toUpperCase() : '?')}
+            <img
+              src={profilePic || fallbackAvatar}
+              alt={post.username}
+              onError={(e) => {
+                if (e.target.src !== fallbackAvatar) {
+                  e.target.src = fallbackAvatar;
+                }
+              }}
+            />
           </div>
           <div>
             <div className={s.username}>{post.username}</div>
             <div className={s.time}>{timeAgo(post.createdAt)}</div>
           </div>
         </Link>
-        {/* FIX: Add safety check for user object when logged out */}
         {user && user.userId === post.userId && (
           <button
             className={s.deleteBtn}
@@ -154,23 +162,33 @@ export default function PostCard({ post, onRefresh }) {
         <div className={s.commentsSection}>
           {comments.length === 0 ?
             <p className={s.noComments}>No comments yet. Be first!</p>
-          : comments.map((c) => (
-              <div key={c.id} className={s.comment}>
-                <div className={s.commentAvatar}>
-                  {c.profilePicture ? 
-                    <img src={c.profilePicture} alt={c.username} /> 
-                    : (c.username ? c.username[0].toUpperCase() : '?')}
+          : comments.map((c) => {
+              const commentFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.username || "U")}&background=random&color=fff&size=64`;
+              return (
+                <div key={c.id} className={s.comment}>
+                  <div className={s.commentAvatar}>
+                    <img
+                      src={c.profilePicture || commentFallback}
+                      alt={c.username}
+                      onError={(e) => {
+                        if (e.target.src !== commentFallback) {
+                          e.target.src = commentFallback;
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className={s.commentBody}>
+                    <span className={s.commentUser}>{c.username}</span>
+                    <p className={s.commentText}>{c.content}</p>
+                    <span className={s.commentTime}>
+                      {timeAgo(c.createdAt)}
+                    </span>
+                  </div>
                 </div>
-                <div className={s.commentBody}>
-                  <span className={s.commentUser}>{c.username}</span>
-                  <p className={s.commentText}>{c.content}</p>
-                  <span className={s.commentTime}>{timeAgo(c.createdAt)}</span>
-                </div>
-              </div>
-            ))
+              );
+            })
           }
-          {/* FIX: Hide comment input when logged out */}
-          {user ? (
+          {user ?
             <form className={s.commentForm} onSubmit={handleComment}>
               <input
                 placeholder="Write a comment..."
@@ -182,9 +200,10 @@ export default function PostCard({ post, onRefresh }) {
                 {loadingComment ? "..." : "Post"}
               </button>
             </form>
-          ) : (
-            <p className={s.loginPrompt}>Please <Link to="/login">login</Link> to comment.</p>
-          )}
+          : <p className={s.loginPrompt}>
+              Please <Link to="/login">login</Link> to comment.
+            </p>
+          }
         </div>
       )}
     </div>

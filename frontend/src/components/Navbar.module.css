@@ -203,25 +203,52 @@
   height: 17px;
 }
 
-/* FIXED: Mobile responsive styles */
+/* CLEAN MOBILE NAVBAR FIX */
 @media (max-width: 768px) {
   .nav {
     padding: 0 0.75rem;
-    gap: 0.5rem;
+    height: 58px;
+    gap: 0.3rem;
+    justify-content: space-between;
   }
 
-  /* FIX: Ensure App Name "SocialHub" is always visible */
+  .logo {
+    gap: 0.3rem;
+  }
+
   .logo span:last-child {
     display: block !important;
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
-  /* FIX: Search bar remains visible but adjusts width */
+  .logoIcon {
+    font-size: 1.1rem;
+  }
+
+  /* Spacious Search Bar */
   .searchWrap {
     display: flex !important;
     flex: 1;
-    min-width: 100px;
-    max-width: none;
+    margin: 0 0.4rem;
+    max-width: 180px;
+    min-width: 80px;
+  }
+
+  .searchInput {
+    font-size: 14px;
+    padding: 0.4rem 0.6rem 0.4rem 1.8rem;
+    border-radius: 10px;
+    height: 34px;
+  }
+
+  .searchIcon {
+    width: 13px;
+    height: 13px;
+    left: 8px;
+  }
+
+  .right {
+    gap: 0.4rem;
   }
 
   .navUsername {
@@ -229,88 +256,48 @@
   }
 
   .profileBtn {
-    padding: 0.3rem;
+    padding: 0.2rem;
+    background: transparent;
+    border: none;
   }
 
-  .searchToggle {
-    display: none;
-  }
-
-  .searchInput {
-    font-size: 16px;
-    padding: 0.4rem 0.8rem 0.4rem 2rem;
-  }
-
-  .searchIcon {
-    width: 15px;
-    height: 15px;
-    left: 10px;
+  .themeToggle,
+  .logoutBtn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
-  .nav {
-    justify-content: space-between;
-  }
-
-  /* Keep app name even on very small screens */
   .logo span:last-child {
-    display: block !important;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .searchWrap {
-    max-width: 140px; /* Limit search to make room for logo and right buttons */
+    max-width: 130px;
+  }
+
+  .nav {
+    padding: 0 0.5rem;
   }
 }
 
 .searchToggle {
   display: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--text2);
-  flex-shrink: 0;
-}
-.searchToggle:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.searchToggle svg {
-  width: 17px;
-  height: 17px;
 }
 
 .searchClose {
   position: absolute;
-  right: 0.75rem;
+  right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--text3);
-  width: 28px;
-  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-}
-.searchClose:hover {
-  background: var(--bg3);
-  color: var(--text);
-}
-.searchClose svg {
-  width: 16px;
-  height: 16px;
-}
-
-.hideOnSearch {
-  display: none;
 }
 
 .navAvatar img {
@@ -318,8 +305,4 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.searchActive {
-  display: flex !important;
 }
