@@ -3,14 +3,17 @@ import api from "../api/axios";
 import PostCard from "../components/PostCard";
 import CreatePost from "../components/CreatePost";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 import s from "./Feed.module.css";
 
 export default function Feed() {
+  const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadPosts = async () => {
     try {
+      setLoading(true);
       const res = await api.get("/api/posts");
       setPosts(res.data);
     } catch {
@@ -20,9 +23,17 @@ export default function Feed() {
     }
   };
 
+  // Initial load
   useEffect(() => {
     loadPosts();
   }, []);
+
+  // Re-fetch posts when user logs in/out
+  useEffect(() => {
+    if (user) {
+      loadPosts();
+    }
+  }, [user?.userId]);
 
   return (
     <div className={s.layout}>
