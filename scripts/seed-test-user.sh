@@ -5,8 +5,8 @@
 set -euo pipefail
 
 BASE="${BASE:-https://socialhub-szwp.onrender.com}"
-USERNAME="${USERNAME:-notion_bot}"
-EMAIL="${EMAIL:-notion_bot@example.com}"
+USERNAME="${USERNAME:-friend_bot}"
+EMAIL="${EMAIL:-friend_bot@example.com}"
 PASSWORD="${PASSWORD:-Test@1234}"
 MESSAGE="${1:-Hello from a fresh test account! Just exploring SocialHub.}"
 
