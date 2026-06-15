@@ -5,59 +5,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import s from "./PostCard.module.css";
 
-// COMPLETE AVATAR COMPONENT: Checks all possible data sources
-const UserAvatar = ({ src, username, size = 42 }) => {
-  // Try multiple sources for the image URL
-  const imageUrl = src || username;
-
-  // Fallback: Generate avatar with initials
-  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(username || "U")}&background=6366f1&color=fff&bold=true`;
-
-  const [imageSrc, setImageSrc] = useState(imageUrl);
-
-  const handleImageError = () => {
-    // If the image fails to load, use the fallback
-    if (imageSrc !== fallback) {
-      setImageSrc(fallback);
-    }
-  };
-
-  return (
-    <div
-      style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        minWidth: `${size}px`,
-        maxWidth: `${size}px`,
-        minHeight: `${size}px`,
-        maxHeight: `${size}px`,
-        borderRadius: "50%",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "var(--bg3)",
-        flexShrink: 0,
-        border: "1px solid var(--border)",
-      }}
-    >
-      <img
-        key={imageSrc}
-        src={imageSrc}
-        alt={username || "Avatar"}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          display: "block",
-        }}
-        onError={handleImageError}
-      />
-    </div>
-  );
-};
-
-export default function PostCard({ post = {}, onRefresh }) {
+export default function PostCard({ post, onRefresh }) {
   const { user } = useAuth();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
@@ -65,7 +13,6 @@ export default function PostCard({ post = {}, onRefresh }) {
   const [loadingComment, setLoadingComment] = useState(false);
 
   const handleLike = async () => {
-    if (!user) return toast.error("Please login to like");
     try {
       post.likedByMe ?
         await api.delete(`/api/likes/${post.id}`)
@@ -83,7 +30,7 @@ export default function PostCard({ post = {}, onRefresh }) {
     }
     try {
       const res = await api.get(`/api/comments/${post.id}`);
-      setComments(res.data || []);
+      setComments(res.data);
       setShowComments(true);
     } catch {
       toast.error("Could not load comments");
@@ -92,14 +39,13 @@ export default function PostCard({ post = {}, onRefresh }) {
 
   const handleComment = async (e) => {
     e.preventDefault();
-    if (!user) return toast.error("Please login to comment");
     if (!newComment.trim()) return;
     setLoadingComment(true);
     try {
       await api.post(`/api/comments/${post.id}`, { content: newComment });
       setNewComment("");
       const res = await api.get(`/api/comments/${post.id}`);
-      setComments(res.data || []);
+      setComments(res.data);
       onRefresh();
     } catch {
       toast.error("Could not post comment");
@@ -109,7 +55,6 @@ export default function PostCard({ post = {}, onRefresh }) {
   };
 
   const handleDelete = async () => {
-    if (!user || user.userId !== post.userId) return;
     if (!window.confirm("Delete this post?")) return;
     try {
       await api.delete(`/api/posts/${post.id}`);
@@ -121,7 +66,6 @@ export default function PostCard({ post = {}, onRefresh }) {
   };
 
   const timeAgo = (dateStr) => {
-    if (!dateStr) return "";
     const diff = Date.now() - new Date(dateStr);
     const m = Math.floor(diff / 60000);
     if (m < 1) return "just now";
@@ -131,50 +75,68 @@ export default function PostCard({ post = {}, onRefresh }) {
     return `${Math.floor(h / 24)}d ago`;
   };
 
-  // Ensure all post data is available
-  const postData = post || {};
-  const postUsername = postData.username || "User";
-  const postProfilePic = postData.profilePicture || null;
-  const postUserId = postData.userId || null;
-
   return (
     <div className={`${s.card} fade-up`}>
       <div className={s.header}>
-        <Link to={`/profile/${postUserId}`} className={s.author}>
-          <UserAvatar src={postProfilePic} username={postUsername} size={42} />
+        <Link to={`/profile/${post.userId}`} className={s.author}>
+          <div className={s.avatar}>
+            {post.profilePicture && (
+              <img
+                src={post.profilePicture}
+                alt=""
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling.style.display = "flex";
+                }}
+              />
+            )}
+            <span
+              className={s.avatarFallback}
+              style={{ display: post.profilePicture ? "none" : "flex" }}
+            >
+              {post.username[0].toUpperCase()}
+            </span>
+          </div>
           <div>
-            <div className={s.username}>{postUsername}</div>
-            <div className={s.time}>{timeAgo(postData.createdAt)}</div>
+            <div className={s.username}>{post.username}</div>
+            <div className={s.time}>{timeAgo(post.createdAt)}</div>
           </div>
         </Link>
-        {user && user.userId === postUserId && (
-          <button className={s.deleteBtn} onClick={handleDelete}>
+        {user.userId === post.userId && (
+          <button
+            className={s.deleteBtn}
+            onClick={handleDelete}
+            title="Delete post"
+          >
             ✕
           </button>
         )}
       </div>
 
-      <p className={s.content}>{postData.content || ""}</p>
+      <p className={s.content}>{post.content}</p>
 
-      {postData.imageUrl && (
-        <img src={postData.imageUrl} alt="" className={s.postImage} />
+      {post.imageUrl && (
+        <img src={post.imageUrl} alt="" className={s.postImage} />
       )}
 
       <div className={s.actions}>
         <button
-          className={`${s.actionBtn} ${postData.likedByMe ? s.liked : ""}`}
+          className={`${s.actionBtn} ${post.likedByMe ? s.liked : ""}`}
           onClick={handleLike}
         >
           <svg
             className={s.actionIcon}
             viewBox="0 0 24 24"
-            fill={postData.likedByMe ? "currentColor" : "none"}
+            fill={post.likedByMe ? "currentColor" : "none"}
             stroke="currentColor"
             strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
           >
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          <span>{postData.likeCount || 0}</span>
+          <span>{post.likeCount}</span>
         </button>
 
         <button
@@ -187,52 +149,47 @@ export default function PostCard({ post = {}, onRefresh }) {
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
           >
             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
           </svg>
-          <span>{postData.commentCount || 0}</span>
+          <span>{post.commentCount}</span>
         </button>
       </div>
 
       {showComments && (
         <div className={s.commentsSection}>
-          {(comments || []).length === 0 ?
-            <p className={s.noComments}>No comments yet.</p>
+          {comments.length === 0 ?
+            <p className={s.noComments}>No comments yet. Be first!</p>
           : comments.map((c) => (
               <div key={c.id} className={s.comment}>
-                <UserAvatar
-                  src={c.profilePicture || null}
-                  username={c.username || "User"}
-                  size={28}
-                />
+                <div className={s.commentAvatar}>
+                  {c.username[0].toUpperCase()}
+                </div>
                 <div className={s.commentBody}>
                   <span className={s.commentUser}>{c.username}</span>
-                  <p className={s.commentText}>{c.content}</p>
-                  <span className={s.commentTime}>{timeAgo(c.createdAt)}</span>
+                  <span className={s.commentText}>{c.content}</span>
                 </div>
               </div>
             ))
           }
-          {user ?
-            <form className={s.commentForm} onSubmit={handleComment}>
-              <input
-                className={s.commentInput}
-                placeholder="Write a comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                disabled={loadingComment}
-              />
-              <button
-                className={s.commentSend}
-                disabled={loadingComment || !newComment.trim()}
-              >
-                {loadingComment ? "..." : "→"}
-              </button>
-            </form>
-          : <p className={s.noComments} style={{ marginTop: "10px" }}>
-              Login to comment
-            </p>
-          }
+          <form onSubmit={handleComment} className={s.commentForm}>
+            <input
+              className={s.commentInput}
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button
+              type="submit"
+              className={s.commentSend}
+              disabled={loadingComment}
+            >
+              {loadingComment ? "..." : "↑"}
+            </button>
+          </form>
         </div>
       )}
     </div>

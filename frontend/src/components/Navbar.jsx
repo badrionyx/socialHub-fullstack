@@ -169,9 +169,22 @@ export default function Navbar() {
 
         <Link to={`/profile/${user.userId}`} className={s.profileBtn}>
           <div className={s.navAvatar}>
-            {user.profilePicture ?
-              <img src={user.profilePicture} alt={user.username} />
-            : user.username[0].toUpperCase()}
+            {user.profilePicture && (
+              <img
+                src={user.profilePicture}
+                alt={user.username}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling.style.display = "flex";
+                }}
+              />
+            )}
+            <span
+              className={s.avatarFallback}
+              style={{ display: user.profilePicture ? "none" : "flex" }}
+            >
+              {user.username[0].toUpperCase()}
+            </span>
           </div>{" "}
           <span className={s.navUsername}>{user.username}</span>
         </Link>

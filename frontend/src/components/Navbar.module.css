@@ -99,12 +99,6 @@
   font-size: 0.85rem;
   flex-shrink: 0;
   color: white;
-  overflow: hidden;
-}
-.dropAvatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .dropName {
   font-size: 0.875rem;
@@ -178,8 +172,6 @@
   font-weight: 700;
   font-size: 0.7rem;
   color: white;
-  flex-shrink: 0;
-  overflow: hidden;
 }
 .navUsername {
   font-size: 0.85rem;
@@ -211,43 +203,35 @@
   height: 17px;
 }
 
-/* MOBILE: Keep single-row, just make search compact */
+.searchToggle {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  flex-shrink: 0;
+}
+.searchToggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.searchToggle svg {
+  width: 17px;
+  height: 17px;
+}
+
 @media (max-width: 768px) {
   .nav {
     padding: 0 0.75rem;
-    height: 56px;
     gap: 0.5rem;
   }
 
-  .logo {
-    gap: 0.3rem;
-  }
-
-  .logo span:last-child {
-    font-size: 0.95rem;
-  }
-
-  .logoIcon {
-    font-size: 1.1rem;
-  }
-
-  /* Compact search on mobile */
   .searchWrap {
-    max-width: 120px;
-    flex: 0 1 auto;
-  }
-
-  .searchInput {
-    font-size: 14px;
-    padding: 0.35rem 0.5rem 0.35rem 1.6rem;
-    height: 32px;
-    border-radius: 10px;
-  }
-
-  .searchIcon {
-    width: 12px;
-    height: 12px;
-    left: 8px;
+    display: none;
   }
 
   .navUsername {
@@ -255,27 +239,68 @@
   }
 
   .profileBtn {
-    padding: 0.2rem;
-    background: transparent;
-    border: none;
+    padding: 0.3rem;
   }
 
-  .themeToggle,
-  .logoutBtn {
-    width: 32px;
-    height: 32px;
-    font-size: 0.9rem;
+  .logo span:last-child {
+    font-size: 1rem;
+  }
+
+  .searchToggle {
+    display: flex;
+  }
+
+  /* Mobile search overlay */
+  .searchActive {
+    display: flex !important;
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    background: var(--bg2);
+    padding: 0 0.75rem;
+    align-items: center;
+    z-index: 150;
+  }
+  .searchActive .searchInput {
+    border-radius: var(--radius-sm);
+    padding-right: 2.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .logo span:last-child {
-    font-size: 0.85rem;
+  .nav {
+    justify-content: space-between;
   }
+}
 
-  .searchWrap {
-    max-width: 100px;
-  }
+.searchClose {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text3);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.searchClose:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+.searchClose svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hideOnSearch {
+  display: none;
 }
 
 .navAvatar img {
@@ -285,6 +310,11 @@
   object-fit: cover;
 }
 
-.searchToggle {
-  display: none;
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
