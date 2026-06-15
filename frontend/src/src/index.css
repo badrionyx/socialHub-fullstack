@@ -111,3 +111,13 @@ a {
 .fade-up {
   animation: fadeUp 0.3s ease both;
 }
+
+/* Reserve space for the fixed mobile bottom nav so content
+   (and the Auth page, which has no bottom nav, is unaffected
+   since it's a separate body context-less; covered by the
+   nav being absent there) isn't hidden behind it. */
+@media (max-width: 768px) {
+  body:has(nav[aria-label="Bottom navigation"]) {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom));
+  }
+}

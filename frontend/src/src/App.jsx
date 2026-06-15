@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
+import BottomNav from "./components/BottomNav";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ function WithNav({ children }) {
     <>
       <Navbar />
       {children}
+      <BottomNav />
     </>
   );
 }

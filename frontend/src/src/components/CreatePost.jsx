@@ -65,11 +65,25 @@ export default function CreatePost({ onPostCreated }) {
     <div className={s.card}>
       <div className={s.top}>
         <div className={s.avatar}>
-          {user.profilePicture ?
-            <img src={user.profilePicture} alt={user.username} />
-          : user.username[0].toUpperCase()}
+          {user.profilePicture && (
+            <img
+              src={user.profilePicture}
+              alt={user.username}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                e.currentTarget.nextElementSibling.style.display = "flex";
+              }}
+            />
+          )}
+          <span
+            className={s.avatarFallback}
+            style={{ display: user.profilePicture ? "none" : "flex" }}
+          >
+            {user.username[0].toUpperCase()}
+          </span>
         </div>{" "}
         <textarea
+          id="create-post-textarea"
           className={s.textarea}
           placeholder="What's on your mind?"
           value={content}
