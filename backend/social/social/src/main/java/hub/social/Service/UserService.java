@@ -34,6 +34,13 @@ public class UserService {
 		return userRepository.searchByUsername(query).stream().map(this::mapToResponse).collect(Collectors.toList());
 	}
 
+	public UserResponse updateBio(Long userId, String bio) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+		user.setBio(bio);
+		userRepository.save(user);
+		return mapToResponse(user);
+	}
+
 	public UserResponse uploadProfilePicture(Long userId, MultipartFile file) throws IOException {
 
 		String contentType = file.getContentType();

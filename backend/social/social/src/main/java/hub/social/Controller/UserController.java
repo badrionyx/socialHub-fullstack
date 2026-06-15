@@ -7,12 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import hub.social.DTO.UpdateUserRequest;
 import hub.social.DTO.UserResponse;
 import hub.social.Security.JWT_Service;
 import hub.social.Service.UserService;
@@ -42,6 +45,17 @@ public class UserController {
 			return ResponseEntity.ok(List.of());
 		}
 		return ResponseEntity.ok(userService.searchUsers(q.trim()));
+	}
+
+	@PutMapping("/{userId}")
+	public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest request,
+			@RequestHeader("Authorization") String authHeader) {
+
+		Long currentUserId = getUserId(authHeader);
+		if (!currentUserId.equals(userId)) {
+			return ResponseEntity.status(403).body("You can only edit your own profile");
+		}
+		return ResponseEntity.ok(userService.updateBio(userId, request.getBio()));
 	}
 
 	@PostMapping(value = "/upload-picture", consumes = "multipart/form-data")

@@ -26,7 +26,7 @@ public class SecurityConfig {
 		http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
 				.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/api/auth/login", "/api/auth/register", "/uploads/**").permitAll()
+						auth -> auth.requestMatchers("/api/auth/login", "/api/auth/register", "/uploads/**", "/error").permitAll()
 								.anyRequest().authenticated())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
