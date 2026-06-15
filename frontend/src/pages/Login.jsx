@@ -22,7 +22,7 @@ export default function Login() {
       const { token, username, userId, profilePicture } = res.data;
       login({ username, userId, profilePicture }, token);
       toast.success(`Welcome back, ${username}!`);
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err) {
       toast.error(err.response?.data || "Login failed");
     } finally {

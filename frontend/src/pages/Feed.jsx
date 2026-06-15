@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
+import useDoubleBackExit from '../hooks/useDoubleBackExit';
 import toast from 'react-hot-toast';
 import s from './Feed.module.css';
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useDoubleBackExit();
 
   const loadPosts = async () => {
     try {
