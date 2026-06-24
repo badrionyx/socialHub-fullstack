@@ -6,7 +6,7 @@ A full-stack social media web application built with Java Spring Boot and React.
 
 ## Tech Stack
 
-**Backend**
+***Backend***
 
 - Java 17
 - Spring Boot 3.2
@@ -14,7 +14,7 @@ A full-stack social media web application built with Java Spring Boot and React.
 - Spring Data JPA
 - MySQL
 
-**Frontend**
+***Frontend***
 
 - React + Vite
 - Axios
