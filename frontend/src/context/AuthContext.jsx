@@ -26,9 +26,6 @@ export function AuthProvider({ children }) {
     });
   };
 
-  // The login response doesn't always include the latest profilePicture
-  // (e.g. one set in a previous session). Fetch it from the user's
-  // profile so navbar/avatars stay accurate after every login or reload.
   useEffect(() => {
     if (!user?.userId) return;
 

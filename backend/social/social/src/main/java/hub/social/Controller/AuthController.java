@@ -1,7 +1,6 @@
 package hub.social.Controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "http://localhost:5173") // allow React to call this
+//@CrossOrigin(origins = "http://localhost:5173") // allow React to call this but now i have globally declared..
 public class AuthController {
 
 	private final AuthService authService;
