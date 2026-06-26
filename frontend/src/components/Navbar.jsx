@@ -14,6 +14,7 @@ export default function Navbar() {
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const searchRef = useRef(null);
   const mobileInputRef = useRef(null);
 
@@ -39,6 +40,13 @@ export default function Navbar() {
     navigate(`/profile/${id}`);
   };
 
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
+    toast.success("See you soon!");
+    navigate("/login");
+  };
+
   useEffect(() => {
     const h = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -55,6 +63,53 @@ export default function Navbar() {
       mobileInputRef.current.focus();
     }
   }, [mobileSearchOpen]);
+
+  // Inline styles kept as named objects (single-brace usage in JSX)
+  const avatarFallbackStyle = { display: user.profilePicture ? "none" : "flex" };
+  const overlayStyle = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0, 0, 0, 0.55)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+    padding: 16,
+  };
+  const modalStyle = {
+    background: dark ? "#1e1f22" : "#ffffff",
+    color: dark ? "#f5f5f5" : "#111111",
+    width: "100%",
+    maxWidth: 320,
+    borderRadius: 14,
+    padding: 24,
+    boxShadow: "0 12px 40px rgba(0, 0, 0, 0.3)",
+    textAlign: "center",
+  };
+  const titleStyle = { margin: "0 0 8px", fontSize: 18 };
+  const textStyle = { margin: "0 0 20px", fontSize: 14, opacity: 0.8 };
+  const actionsStyle = { display: "flex", gap: 10, justifyContent: "center" };
+  const cancelBtnStyle = {
+    flex: 1,
+    padding: "10px 16px",
+    borderRadius: 8,
+    border: dark ? "1px solid #3a3b3f" : "1px solid #d0d0d0",
+    background: "transparent",
+    color: "inherit",
+    fontSize: 14,
+    cursor: "pointer",
+  };
+  const confirmBtnStyle = {
+    flex: 1,
+    padding: "10px 16px",
+    borderRadius: 8,
+    border: "none",
+    background: "#e0245e",
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+  };
 
   return (
     <nav className={s.nav}>
@@ -138,7 +193,7 @@ export default function Navbar() {
       </div>
 
       <div className={`${s.right} ${mobileSearchOpen ? s.hideOnSearch : ""}`}>
-        {/* ── Mobile search toggle ── */}
+        {/* Mobile search toggle */}
         <button
           className={s.searchToggle}
           onClick={() => setMobileSearchOpen(true)}
@@ -158,7 +213,7 @@ export default function Navbar() {
           </svg>
         </button>
 
-        {/* ── Dark / Light toggle ── */}
+        {/* Dark / Light toggle */}
         <button
           className={s.themeToggle}
           onClick={toggle}
@@ -179,10 +234,7 @@ export default function Navbar() {
                 }}
               />
             )}
-            <span
-              className={s.avatarFallback}
-              style={{ display: user.profilePicture ? "none" : "flex" }}
-            >
+            <span className={s.avatarFallback} style={avatarFallbackStyle}>
               {user.username[0].toUpperCase()}
             </span>
           </div>{" "}
@@ -191,11 +243,7 @@ export default function Navbar() {
 
         <button
           className={s.logoutBtn}
-          onClick={() => {
-            logout();
-            toast.success("See you soon!");
-            navigate("/login");
-          }}
+          onClick={() => setShowLogoutConfirm(true)}
           aria-label="Sign out"
           title="Sign out"
         >
@@ -213,6 +261,31 @@ export default function Navbar() {
           </svg>
         </button>
       </div>
+
+      {showLogoutConfirm && (
+        <div
+          onClick={() => setShowLogoutConfirm(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirm sign out"
+          style={overlayStyle}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={modalStyle}>
+            <h3 style={titleStyle}>Sign out?</h3>
+            <p style={textStyle}>
+              Are you sure you want to sign out of SocialHub?
+            </p>
+            <div style={actionsStyle}>
+              <button onClick={() => setShowLogoutConfirm(false)} style={cancelBtnStyle}>
+                Cancel
+              </button>
+              <button onClick={confirmLogout} style={confirmBtnStyle}>
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
